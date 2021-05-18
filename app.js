@@ -25,6 +25,7 @@ function initialize(steps){
     const formBox = createHTML("div", title + form, ["flex","flex-col","items-start","bg-blue-200"]);
     htmlStr += formBox;
   }
+  setSelectOptions(steps[0].name, steps[0].selectBx[0]);
   const submitBtn = createHTML("button", "Add PC", ["submitBtn","p-2","m-2","bg-blue-500","rounded-sm","font-bold","text-gray-100","focus:outline-none","hover:shadow-outline"]);
   const main = createHTML("div", htmlStr + submitBtn, ["w-full", "bg-blue-200","p-2"]);
   CONFIG.root.innerHTML = header + main;
@@ -40,7 +41,7 @@ function initialize(steps){
       select.id = id;
       CONFIG.TARGET_IDS[id] = `document.getElementById('${id}')`;
 
-      if(i == 0) setSelectOptions(step.name, step.selectBx[i]);
+      // if(i == 0) setSelectOptions(step.name, step.selectBx[i]);
       htmlStr += placeholder + select.outerHTML;
     }
     return createHTML("div",htmlStr,["flex","justify-center","items-center","test", "font-bold"]);
@@ -63,13 +64,19 @@ function initialize(steps){
 initialize(CONFIG.STEPS);
 // console.log(CONFIG.TARGET_IDS);
 
+
+function setSelectOptions(key, value) {
+  fetchData(key).then(data=> {
+    console.log(data);
+    let hashmap = {};
+    for(let d of data) if(hashmap[d[value]] === undefined) hashmap[d[value]] = d[value];
+    return Object.keys(hashmap);
+  });
+}
 function fetchData(key) {
   const url = CONFIG.url + key.toLowerCase();
-  fetch(url).then(res=>res.json()).then(data=> data);
+  return fetch(url).then(res=>res.json()).then(data=> data);
 }
 
-async function setSelectOptions(key, attribute) {
-  fetchData(key).then(data=> console.log(data));
-  
-}
+
 

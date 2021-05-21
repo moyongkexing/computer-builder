@@ -8,18 +8,18 @@ const CONFIG = {
     STORAGE: ["HDD or SSD?" ,"Storage", "Brand", "Model"],
   },
   GAMING_INDEX: {
-    CPU: 0.25, 
-    GPU: 0.6, 
-    RAM: 0.125, 
-    HDD: 0.025,
-    SSD: 0.1,
+    CPU: .25, 
+    GPU: .6, 
+    RAM: .125, 
+    HDD: .025,
+    SSD: .1,
   },
   WORKING_INDEX: {
-    CPU: 0.6,
-    GPU: 0.25,
-    RAM: 0.1,
-    HDD: 0.05,
-    SSD: 0.05,
+    CPU: .6,
+    GPU: .25,
+    RAM: .1,
+    HDD: .05,
+    SSD: .05,
   },
   SELECTED_PC: {},
   SCORES: {},
@@ -29,12 +29,12 @@ const CONFIG = {
   STORAGE_CACHE: {},
 }
 
-render(); // CONFIG.STEPSをもとにHTMLを生成する関数。セレクトボックスを生成するときにidとchangeイベントリスナーを付与する。
-setOptionsToFirstSelectBx(); // 各ステップの最初のセレクトボックスに選択肢をセットする関数。ついでに選択肢をキーにとるキャッシュをつくる。
-// setOptionsToNextSelectBx(STEP, i); // 各セレクトボックスが選択されたら、その右隣のセレクトボックスの中身をセットするイベント関数。
-// buildComputer(); // 「Add PC」ボタンが押されたら、ベンチマークを計算して結果を表示するイベント関数。
+render(); // render() generate HTML based on CONFIG.STEPS. When generating a select box, give it an id and a change event listener.
+setOptionsToFirstSelectBx(); // setOptionsToFirstSelectBx() sets the options in the select box at the beginning of each step. It also creates a CACHE with those options as keys.
+// setOptionsToNextSelectBx(STEP, i); // An event function that sets the option in the right next select box after each select box is selected.
+// buildComputer(); // An event function that calculates a benchmark score and displays the result when the "Add PC" button is clicked.
 
-// <--------メイン関数-------->
+// <--------Main Functions-------->
 function render(){
   const header = document.createElement("p");
   header.innerHTML = "Build Your Own PC";
@@ -203,7 +203,7 @@ async function buildComputer() {
   CONFIG.SELECTED_PC = {};
   CONFIG.SCORES = {};
   for(let STEP of Object.keys(CONFIG.STEPS)) {
-    let component = {};
+    let component = {}; // component is meant to be { name: ***, score: ***}
     let value = getInputValueFromLastSelectBx(STEP);　// (example) value = "Trident Z DDR4 3200 C14 4x16GB" 
     if(value === "") return alert("Select All");
     component["name"] = value;
@@ -227,7 +227,7 @@ async function buildComputer() {
   CONFIG.SCORES["Gaming Score"] = gamingScore;
   CONFIG.SCORES["Working Score"] = workingScore;
 };
-// <--------メイン関数終わり-------->
+// <--------Main Functions-------->
 
 function fetchData(key) {
   const url = CONFIG.url + key.toLowerCase()

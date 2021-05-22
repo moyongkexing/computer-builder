@@ -29,33 +29,8 @@ const CONFIG = {
   STORAGE_CACHE: {},
 }
 
-// class SelectBx {
-//   constructor(type, name, id) {
-//     this.type = type;
-//     this.name = name;
-//     this.id = id;
-//     this.value = document.getElementById(`${this.name}Of${this.type}`).value;
-//     this.options = [];
-//   };
-
-//   initializeOption() {
-//     const firstOption = `<option value = "" hidden>Choose one</option>`
-//     this.options.push(firstOption);
-//   }
-
-//   getSelectedValue() {
-//     return this.value;
-//   }
-
-//   setOptions(valueArr) {
-//     valueArr.forEach(value => {
-//       this.options.push(`<option value="${value}">${value}</option>`);
-//     });
-//   }
-// }
-
 render(); // render() generate HTML based on CONFIG.STEPS. When generating a select box, give it an id and a change event listener.
-setOptionsToFirstSelectBx(); // setOptionsToFirstSelectBx() sets the options in the select box at the beginning of each step. It also creates a CACHE with those options as keys.
+setOptionsToFirstSelectBx(); // setOptionsToFirstSelectBx() sets the options in the select box at the beginning of each step. It also creates a CONFIG.CACHE with those options as keys.
 // setOptionsToNextSelectBx(STEP, i); // An event function that sets the option in the right next select box after each select box is selected.
 // buildComputer(); // An event function that calculates a benchmark score and displays the result when the "Add PC" button is clicked.
 
@@ -103,7 +78,7 @@ function render(){
       placeholder.innerHTML = selectBxs[i];
       placeholder.classList.add("ml-4", "mr-2","mb-3");
 
-      const select = document.createElement("select");
+      const select = document.createElement("select"); // set an id and a change event listener.
       select.id = `${selectBxs[i]}Of${STEP}`
       select.classList.add("mt-3","mb-5","px-4");
       select.addEventListener("change", () => setOptionsToNextSelectBx(STEP, i));
@@ -156,8 +131,8 @@ async function setOptionsToFirstSelectBx() {
     switch(STEP) {
       case "CPU": {
         let datas = await fetchData(STEP);
-        valueArr = Object.keys(createAttrList(datas, "Brand")); // valueArr = ["Intel", "AMD"]
-        CONFIG["CPU_CACHE"] = createCache(valueArr, datas, "Brand");break; // CPU_CACHE = { Intel: [{ },{ },{ }], AMD: [{ },{ },{ }]}
+        valueArr = Object.keys(createAttrList(datas, "Brand")); // return ["Intel", "AMD"]
+        CONFIG["CPU_CACHE"] = createCache(valueArr, datas, "Brand");break; // return { Intel: [{ },{ },{ }], AMD: [{ },{ },{ }]}
       };
       case "GPU": {
         let datas = await fetchData(STEP);
@@ -166,8 +141,8 @@ async function setOptionsToFirstSelectBx() {
       } 
       case "RAM": {
         let datas = await fetchData(STEP);
-        valueArr = Object.keys(createStickNumList(datas, "Model")); // valueArr = [1,2,4,8]
-        CONFIG["RAM_CACHE"] = createStickNumCache(valueArr, datas, "Model");break; // RAM_CACHE = { 1: [{ },{ },{ },], 2: [{ },{ },{ },]...}
+        valueArr = Object.keys(createStickNumList(datas, "Model")); // return [1,2,4,8]
+        CONFIG["RAM_CACHE"] = createStickNumCache(valueArr, datas, "Model");break; // return { 1: [{ },{ },{ },], 2: [{ },{ },{ },]...}
       }
       case "STORAGE": {
         valueArr = ["HDD", "SSD"];
@@ -185,7 +160,7 @@ async function setOptionsToFirstSelectBx() {
 
 async function setOptionsToNextSelectBx(STEP, i) {
   if(i >= CONFIG.STEPS[STEP].length - 1) return;
-  const inputValues = getInputValueFromSelectBxs(STEP, i); // (when STEP = "STORAGE") inputValues = ["HDD", "5TB", "Toshiba"]
+  const inputValues = getInputValueFromSelectBxs(STEP, i); // (when STEP = "STORAGE", i = 2) return ["HDD", "5TB", "Toshiba"]
   const nextSelectBx = CONFIG.STEPS[STEP][i+1]; // (when STEP = "RAM", i = 1) nextSelectBx = "Model"
   const datas = CONFIG[`${STEP}_CACHE`][inputValues[0]]; // (when STEP = "STORAGE") datas = CONFIG.STORAGE_CACHE["HDD"]
 
@@ -204,7 +179,7 @@ async function setOptionsToNextSelectBx(STEP, i) {
     case "STORAGE": {
       switch(nextSelectBx) {
         case "Storage": {
-          valueArr = Object.keys(createStorageVolumeList(datas, "Model"));break; // (example) valueArr = ["12TB", "10TB", "8TB", "6TB"...]
+          valueArr = Object.keys(createStorageVolumeList(datas, "Model"));break; // (example) return ["12TB", "10TB", "8TB", "6TB"...]
         }
         case "Brand": {
           let filteredData = datas.filter(data => getStorageVolume(data.Model) === inputValues[1]); // (example) filteredData = datas.filter(data => "5TB" === "5TB")
@@ -229,7 +204,7 @@ async function buildComputer() {
   CONFIG.SCORES = {};
   for(let STEP of Object.keys(CONFIG.STEPS)) {
     let component = {}; // component is meant to be { name: ***, score: ***}
-    let value = getInputValueFromLastSelectBx(STEP);　// (example) value = "Trident Z DDR4 3200 C14 4x16GB" 
+    let value = getInputValueFromLastSelectBx(STEP);　// (example) return "Trident Z DDR4 3200 C14 4x16GB" 
     if(value === "") return alert("Select Model!");
     component["name"] = value;
 

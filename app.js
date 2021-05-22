@@ -29,6 +29,31 @@ const CONFIG = {
   STORAGE_CACHE: {},
 }
 
+// class SelectBx {
+//   constructor(type, name, id) {
+//     this.type = type;
+//     this.name = name;
+//     this.id = id;
+//     this.value = document.getElementById(`${this.name}Of${this.type}`).value;
+//     this.options = [];
+//   };
+
+//   initializeOption() {
+//     const firstOption = `<option value = "" hidden>Choose one</option>`
+//     this.options.push(firstOption);
+//   }
+
+//   getSelectedValue() {
+//     return this.value;
+//   }
+
+//   setOptions(valueArr) {
+//     valueArr.forEach(value => {
+//       this.options.push(`<option value="${value}">${value}</option>`);
+//     });
+//   }
+// }
+
 render(); // render() generate HTML based on CONFIG.STEPS. When generating a select box, give it an id and a change event listener.
 setOptionsToFirstSelectBx(); // setOptionsToFirstSelectBx() sets the options in the select box at the beginning of each step. It also creates a CACHE with those options as keys.
 // setOptionsToNextSelectBx(STEP, i); // An event function that sets the option in the right next select box after each select box is selected.
@@ -205,7 +230,7 @@ async function buildComputer() {
   for(let STEP of Object.keys(CONFIG.STEPS)) {
     let component = {}; // component is meant to be { name: ***, score: ***}
     let value = getInputValueFromLastSelectBx(STEP);　// (example) value = "Trident Z DDR4 3200 C14 4x16GB" 
-    if(value === "") return alert("Select All");
+    if(value === "") return alert("Select Model!");
     component["name"] = value;
 
     let datas;

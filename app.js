@@ -58,10 +58,8 @@ function render(){
   submitBtn.innerHTML = "Add PC";
   submitBtn.classList.add("submitBtn","p-2","m-2","bg-blue-500","rounded-sm","font-bold","text-gray-100","focus:outline-none","hover:shadow-outline");
   submitBtn.addEventListener("click", async () => {
-    await buildComputer();
-    CONFIG.root.append(createResult());
+    if(await buildComputer() === "success") CONFIG.root.append(createResult());
   });
-
 
   const main = document.createElement("div");
   main.classList.add("w-full", "bg-blue-200","p-2", "mb-2");
@@ -205,7 +203,10 @@ async function buildComputer() {
   for(let STEP of Object.keys(CONFIG.STEPS)) {
     let component = {}; // component is meant to be { name: ***, score: ***}
     let value = getInputValueFromLastSelectBx(STEP);　// (example) return "Trident Z DDR4 3200 C14 4x16GB" 
-    if(value === "") return alert("Select Model!");
+    if(value === "") {
+      alert("Select Model!");
+      return "fail";
+    }
     component["name"] = value;
 
     let datas;
@@ -226,6 +227,7 @@ async function buildComputer() {
   const workingScore = calculateWorkingScore();
   CONFIG.SCORES["Gaming Score"] = gamingScore;
   CONFIG.SCORES["Working Score"] = workingScore;
+  return "success";
 };
 // <--------Main Functions-------->
 
